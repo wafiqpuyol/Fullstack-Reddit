@@ -6,7 +6,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/Dropdown-menu";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { LogOut } from "lucide-react";
 import AuthDialog from "./AuthDialog";
@@ -23,7 +23,7 @@ const ThreeDot = () => {
           <LogOut />
           <AuthDialog />
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator /> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );
