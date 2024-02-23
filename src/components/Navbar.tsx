@@ -2,8 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import NavLink from "./NavLink";
 import SideNav from "./SidebarNav";
+import { getAuthSession } from "@/lib/auth";
+import { loadGetInitialProps } from "next/dist/shared/lib/utils";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const session = await getAuthSession();
+  console.log(session);
   return (
     <div className="fixed top-0 h-fit border-b border-zinc-700 py-3 inset-x-5 z-10 px-2">
       <div className="grid justify-between grid-cols-12">
@@ -18,6 +22,7 @@ const Navbar = () => {
             />
             <p className="hidden md:block text-2xl font-extrabold">reddit</p>
           </Link>
+
           <SideNav />
         </div>
         {/* Search bar */}

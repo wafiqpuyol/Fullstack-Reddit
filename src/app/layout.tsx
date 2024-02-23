@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import Provider from "@/context/Provider";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
@@ -21,8 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={(cn("antialiased light"), inter.className)}>
       <body className="min-h-screen bg-[#1A1A1B] text-white antialiased pt-20 px-5">
-        <Navbar />
-        {children}
+        <Provider>
+          <Navbar />
+          {children}
+        </Provider>
       </body>
     </html>
   );

@@ -1,5 +1,3 @@
-"use client";
-import { ChevronDown, Home, Plus } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -9,8 +7,13 @@ import {
   DropdownMenuTrigger,
 } from "./ui/Dropdown-menu";
 import CreateCommunityDialog from "./CreateCommunityDialog";
+import { ChevronDown, Home, Plus } from "lucide-react";
+import { getAuthSession } from "@/lib/auth";
+import Auth from "./Auth";
 
-const SideNav = () => {
+const SideNav = async () => {
+  const session = await getAuthSession();
+
   return (
     <div className="w-72">
       <DropdownMenu>
@@ -52,7 +55,15 @@ const SideNav = () => {
               <span className="text-[0.7rem] font-bold">Feeds</span>
               <div className="flex">
                 <Plus className="text-zinc-700" />
-                <CreateCommunityDialog />
+                {session?.user ? (
+                  <CreateCommunityDialog>
+                    <p>Create Community</p>
+                  </CreateCommunityDialog>
+                ) : (
+                  <Auth>
+                    <p>Create Community</p>
+                  </Auth>
+                )}
               </div>
             </div>
 

@@ -1,34 +1,30 @@
+import React from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "./ui/Button";
-import { Icons } from "./icons";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/Dropdown-menu";
+import { LogOut } from "lucide-react";
+import Auth from "./Auth";
 
-const AuthDialog = () => {
+const AuthDialog = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Dialog>
-      <DialogTrigger>Log In / Sign Up</DialogTrigger>
-      <DialogContent className="bg-[#131F23] border-0 p-16">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">Log In</DialogTitle>
-          <DialogDescription>
-            By continuing, you agree to our User Agreement and acknowledge that
-            you understand the Privacy Policy.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-2 mt-3">
-          <Button className="bg-white text-black hover:bg-white/90 rounded-3xl">
-            <Icons.google className="h-8 w-8 sm:h-6 sm:w-6 mr-4" />
-            Continue with Google
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <DropdownMenu>
+      <DropdownMenuTrigger className="hover:bg-slate-800 p-3 rounded-full transition-all">
+        {" "}
+        {children}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="mr-10 mt-3 bg-[#131F23] border-none text-white">
+        <DropdownMenuLabel className="flex gap-5 border-none">
+          <LogOut />
+          <Auth>
+            <p>Log In / Sign Up</p>
+          </Auth>
+        </DropdownMenuLabel>
+        {/* <DropdownMenuSeparator /> */}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

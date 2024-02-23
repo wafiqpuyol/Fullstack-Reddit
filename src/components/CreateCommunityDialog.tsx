@@ -8,13 +8,18 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { DropdownMenuSeparator } from "@/components/ui/Dropdown-menu";
-import { Input } from "./ui/Input";
 import CreateCommunity from "./CreateCommunity";
 
-const CreateCommunityDialog = () => {
+interface CreateCommunityDialogProp {
+  children: React.ReactNode;
+}
+
+const CreateCommunityDialog: React.FC<CreateCommunityDialogProp> = ({
+  children,
+}) => {
   return (
     <Dialog>
-      <DialogTrigger className="pl-2 text-sm">Create Community</DialogTrigger>
+      <DialogTrigger className="pl-2 text-sm">{children}</DialogTrigger>
       <DialogContent className="bg-[#1A1A1B] border-zinc-600">
         <DialogHeader>
           <DialogTitle>Create a community</DialogTitle>
