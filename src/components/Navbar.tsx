@@ -7,7 +7,6 @@ import { loadGetInitialProps } from "next/dist/shared/lib/utils";
 
 const Navbar = async () => {
   const session = await getAuthSession();
-  console.log(session);
   return (
     <div className="fixed top-0 h-fit border-b border-zinc-700 py-3 inset-x-5 z-10 px-2">
       <div className="grid justify-between grid-cols-12">

@@ -6,9 +6,6 @@ import { db } from "@/lib/db";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
-  pages: {
-    signIn: "/sign-in",
-  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -19,16 +16,17 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    session({ token, session }) {
-      if (token && session.user) {
-        session.user.id = token.id;
+    async session({ session, token }) {
+      if (token) {
+        session.user["id"] = token.id;
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.picture;
-        session.user.username = token.username;
+        session.user["username"] = token.username;
       }
       return session;
     },
+
     async jwt({ token, user }) {
       const dbUser = await db.user.findFirst({
         where: {

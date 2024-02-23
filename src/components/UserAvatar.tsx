@@ -8,7 +8,6 @@ interface UserAvatarProp {
   profileImage: string | undefined;
 }
 const UserAvatar: React.FC<UserAvatarProp> = ({ profileImage }) => {
-  console.log(profileImage);
   return (
     <Avatar>
       <AvatarImage src={profileImage} className="w-9 rounded-full" />
