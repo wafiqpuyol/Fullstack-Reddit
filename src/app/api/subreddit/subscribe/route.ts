@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { createSubredditValidator } from "@/lib/validation/subreddit";
+import { subredditSubAndUnsubValidator } from "@/lib/validation/subreddit";
 import { db } from "@/lib/db";
 import { getAuthSession } from "@/lib/auth";
 import { ZodError } from "zod";
@@ -12,39 +12,30 @@ export const POST = async (req: Request) => {
         status: StatusCodes.UNAUTHORIZED,
       });
     }
-    const { subRedditName } = createSubredditValidator.parse(await req.json());
-    const existedSubReddit = await db.subreddit.findFirst({
+    const { subredditId, subredditName } = subredditSubAndUnsubValidator.parse(
+      await req.json()
+    );
+    const subreddit = await db.subreddit.findFirst({
       where: {
-        name: subRedditName,
-      },
-      include: {
-        subscribers: true,
-        creator: true,
-        posts: true,
+        id: subredditId,
+        name: subredditName,
       },
     });
 
-    if (existedSubReddit) {
-      return new Response("Subreddit name already exists", {
-        status: StatusCodes.CONFLICT,
+    if (!subreddit) {
+      return new Response("Subreddit does not exists", {
+        status: StatusCodes.BAD_REQUEST,
       });
     }
 
-    const subreddit = await db.subreddit.create({
-      data: {
-        name: subRedditName,
-        creatorId: session.user.id,
-      },
-    });
-
     await db.subscription.create({
       data: {
-        subredditId: subreddit.id,
+        subredditId: subredditId,
         userId: session.user.id,
       },
     });
-    return new Response(subreddit.name);
-  } catch (error: any) {
+    return new Response("Successfully subscribed");
+  } catch (error) {
     if (error instanceof ZodError) {
       return new Response("Invalid Subreddit Name", {
         status: StatusCodes.UNPROCESSABLE_ENTITY,

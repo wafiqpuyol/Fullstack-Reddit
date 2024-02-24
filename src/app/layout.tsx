@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={(cn("antialiased light"), inter.className)}>
-      <body className="min-h-screen bg-[#1A1A1B] text-white antialiased pt-20 px-5">
+      <body className="min-h-screen bg-[#030303] text-white antialiased pt-20 px-5">
         <Provider>
           <Navbar />
           {children}

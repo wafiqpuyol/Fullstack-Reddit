@@ -35,13 +35,8 @@ const useCreateSubreddit = () => {
         }
       }
     },
-    onSuccess: () => {
-      // return toast({
-      //   title: "Subreddit created successfully",
-      //   variant: "default",
-      // });
-      router.push("/subreddit");
-      // return
+    onSuccess: (data) => {
+      router.push(`/r${data}`);
     },
   });
   return { input, setInput, mutate };

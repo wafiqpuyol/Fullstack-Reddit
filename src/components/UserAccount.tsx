@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/Dropdown-menu";
 import React from "react";
 import UserAvatar from "./UserAvatar";
-import { User } from "next-auth";
+import { User } from "@prisma/client";
 import CreateCommunityDialog from "./CreateCommunityDialog";
 import { Plus, Eye } from "lucide-react";
 import { FaRegUserCircle } from "react-icons/fa";
