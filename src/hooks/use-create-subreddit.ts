@@ -36,7 +36,7 @@ const useCreateSubreddit = () => {
       }
     },
     onSuccess: (data) => {
-      router.push(`/r${data}`);
+      router.push(`/r/${data}`);
     },
   });
   return { input, setInput, mutate };
