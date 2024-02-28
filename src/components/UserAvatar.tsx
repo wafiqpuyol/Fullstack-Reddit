@@ -6,11 +6,15 @@ import React from "react";
 
 interface UserAvatarProp {
   profileImage: string | undefined;
+  width?: string;
 }
-const UserAvatar: React.FC<UserAvatarProp> = ({ profileImage }) => {
+const UserAvatar: React.FC<UserAvatarProp> = ({ profileImage, width }) => {
   return (
     <Avatar>
-      <AvatarImage src={profileImage} className="w-9 rounded-full" />
+      <AvatarImage
+        src={profileImage}
+        className={`${width || "w-9"} rounded-full`}
+      />
       <AvatarFallback>
         <Image
           src="https://github.com/shadcn.png"
