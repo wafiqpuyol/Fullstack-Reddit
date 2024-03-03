@@ -1,24 +1,18 @@
 "use client";
 
-import EditorJS from "@editorjs/editorjs";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import TextareaAutosize from "react-textarea-autosize";
-import { z } from "zod";
-
 import { toast } from "@/hooks/use-toast";
 import { uploadFiles } from "@/lib/uploadthing";
 import { createPostPayload, createPostValidator } from "@/lib/validation/post";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-
 import "@/styles/editor.css";
+import EditorJS from "@editorjs/editorjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Input } from "./ui/Input";
+import useCreatePost from "@/hooks/use-create-post";
 
 type FormData = z.infer<typeof createPostValidator>;
-
 interface EditorProps {
   subredditId: string;
 }
@@ -38,38 +32,11 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
     },
   });
   const ref = useRef<EditorJS>();
-  const _titleRef = useRef<HTMLTextAreaElement>(null);
-  const router = useRouter();
+  const _titleRef = useRef<HTMLInputElement>(null);
   const [isMounted, setIsMounted] = useState<boolean>(false);
-  const pathname = usePathname();
   const [wordLength, setWordLength] = useState(maxInputLength);
   const [input, setInput] = useState("");
-
-  const { mutate: createPost } = useMutation({
-    mutationFn: async ({ title, content, subredditId }: createPostPayload) => {
-      const payload: createPostPayload = { title, content, subredditId };
-      const { data } = await axios.post("/api/subreddit/post/create", payload);
-      return data;
-    },
-    onError: () => {
-      return toast({
-        title: "Something went wrong.",
-        description: "Your post was not published. Please try again.",
-        variant: "destructive",
-      });
-    },
-    onSuccess: () => {
-      // turn pathname /r/mycommunity/submit into /r/mycommunity
-      const newPathname = pathname.split("/").slice(0, -1).join("/");
-      router.push(newPathname);
-
-      router.refresh();
-
-      return toast({
-        description: "Your post has been published.",
-      });
-    },
-  });
+  const mutate = useCreatePost();
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default;
@@ -173,7 +140,7 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
       content: blocks,
       subredditId,
     };
-    createPost(payload);
+    mutate(payload);
   }
 
   if (!isMounted) {
@@ -189,25 +156,24 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
        border-zinc-700 "
       >
         <Input
-          ref={(e) => titleRef(e)}
+          ref={(e) => {
+            titleRef(e);
+            // @ts-ignore
+            _titleRef.current = e;
+          }}
+          {...rest}
           placeholder="Please write on me"
           className="text-zinc-200 border-none  bg-transparent  focus-visible:ring-offset-0 focus-visible:ring-0 selection:bg-blue-600"
           maxLength={maxInputLength}
           onChange={(e) => {
-            setInput((textAreaValue: string) => {
-              setWordLength((textAreaLength: number) => {
+            setInput((textValue: string) => {
+              setWordLength((prev: number) => {
                 const inputLength = e.target.value.length;
                 if (inputLength <= 0) {
                   return maxInputLength;
                 }
-                if (e.target.value.length - textAreaValue.length > 0) {
-                  return textAreaLength - 1;
-                }
-                if (e.target.value.length - textAreaValue.length < 0) {
-                  return textAreaLength + 1;
-                }
+                return inputLength;
               });
-
               return e.target.value;
             });
           }}
@@ -215,6 +181,9 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
         />
         <p className="text-zinc-400 w-16 text-xs font-bold">{`${wordLength} / ${maxInputLength}`}</p>
       </div>
+      {errors.title && (
+        <p className="text-red-500 text-xs">{errors.title?.message}</p>
+      )}
       <form
         id="subreddit-post-form"
         className="w-fit"
